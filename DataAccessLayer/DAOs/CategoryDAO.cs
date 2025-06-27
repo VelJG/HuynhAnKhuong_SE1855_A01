@@ -29,28 +29,40 @@ namespace DataAccessLayer.DAOs
 
         public bool Add(Category entity)
         {
-
-            if (_categories.Any(c => c.CategoryId == entity.CategoryId))
+            try
             {
+                if (_categories.Any(c => c.CategoryId == entity.CategoryId))
+                {
+                    return false;
+                }
+                _categories.Add(entity);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error adding category: {ex.Message}");
                 return false;
             }
-
-            _categories.Add(entity);
-            return true;
-
         }
 
         public bool Update(Category entity)
         {
-
-            var category = _categories.FirstOrDefault(c => c.CategoryId == entity.CategoryId);
-            if (category != null)
+            try
             {
-                category.CategoryName = entity.CategoryName;
-                category.Description = entity.Description;
-                return true;
+                var category = _categories.FirstOrDefault(c => c.CategoryId == entity.CategoryId);
+                if (category != null)
+                {
+                    category.CategoryName = entity.CategoryName;
+                    category.Description = entity.Description;
+                    return true;
+                }
+                return false;
             }
-            return false;
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error updating category: {ex.Message}");
+                return false;
+            }
         }
 
         public bool Delete(int id)

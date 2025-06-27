@@ -28,17 +28,23 @@ namespace DataAccessLayer.DAOs
 
         public bool Add(Product entity)
         {
-
-            if (_products.Any(p => p.ProductId == entity.ProductId))
+            try
             {
+                if (_products.Any(p => p.ProductId == entity.ProductId))
+                {
+                    return false;
+                }
+                int newId = _products.Max(p => p.ProductId) + 1;
+                entity.ProductId = newId;
+                _products.Add(entity);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error adding product: {ex.Message}");
                 return false;
             }
-            int newId = _products.Max(p => p.ProductId) + 1;
-            entity.ProductId = newId;
-            _products.Add(entity);
-            return true;
         }
-
         public bool Update(Product entity)
         {
 

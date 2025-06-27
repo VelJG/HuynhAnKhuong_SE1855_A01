@@ -12,7 +12,7 @@ namespace HuynhAnKhuongWPF.ViewModels
     {
         private readonly IProductService _productService;
         private readonly ICategoryService _categoryService;
-        
+
         // Collections
         private ObservableCollection<Product> _products;
         public ObservableCollection<Product> Products
@@ -33,8 +33,8 @@ namespace HuynhAnKhuongWPF.ViewModels
         public Product SelectedProduct
         {
             get { return _selectedProduct; }
-            set 
-            { 
+            set
+            {
                 if (SetProperty(ref _selectedProduct, value))
                 {
                     // When selected product changes, update form data
@@ -48,7 +48,7 @@ namespace HuynhAnKhuongWPF.ViewModels
                         UnitsInStock = _selectedProduct.UnitsInStock;
                         Discontinued = _selectedProduct.Discountinued;
                     }
-                    
+
                     // Update commands that depend on selected product
                     DeleteCommand.CanExecute(null);
                     EditCommand.CanExecute(null);
@@ -111,8 +111,8 @@ namespace HuynhAnKhuongWPF.ViewModels
         public string SearchText
         {
             get { return _searchText; }
-            set 
-            { 
+            set
+            {
                 SetProperty(ref _searchText, value);
             }
         }
@@ -128,14 +128,14 @@ namespace HuynhAnKhuongWPF.ViewModels
         {
             _productService = productService;
             _categoryService = categoryService;
-            
+
             // Initialize commands
             AddCommand = new RelayCommand(ExecuteAdd);
             EditCommand = new RelayCommand(ExecuteEdit, CanEdit);
             DeleteCommand = new RelayCommand(ExecuteDelete, CanDelete);
             SearchCommand = new RelayCommand(ExecuteSearch);
             ClearCommand = new RelayCommand(ExecuteClear);
-            
+
             // Load data
             LoadCategories();
             LoadProducts();
@@ -145,14 +145,14 @@ namespace HuynhAnKhuongWPF.ViewModels
         {
             var productList = _productService.GetAll();
             Products = new ObservableCollection<Product>(productList);
-            
+
             // Add category name to each product
             foreach (var product in Products)
             {
                 product.Category = _categoryService.GetById(product.CategoryId);
             }
         }
-        
+
         private void LoadCategories()
         {
             var categoryList = _categoryService.GetAll();
@@ -163,7 +163,7 @@ namespace HuynhAnKhuongWPF.ViewModels
         {
             var results = _productService.Search(_searchText);
             Products = new ObservableCollection<Product>(results);
-            
+
             // Add category name to each product
             foreach (var product in Products)
             {
@@ -194,9 +194,9 @@ namespace HuynhAnKhuongWPF.ViewModels
                 return;
             }
 
-            if (UnitPrice < 0)
+            if (UnitPrice <= 0)
             {
-                MessageBox.Show("Price cannot be negative");
+                MessageBox.Show("Unit price must be greater than 0");
                 return;
             }
 
@@ -205,41 +205,38 @@ namespace HuynhAnKhuongWPF.ViewModels
                 MessageBox.Show("Units in stock cannot be negative");
                 return;
             }
-            if (UnitPrice == 0)
-            {
-                MessageBox.Show("Units price must be number");
-                return;
-            }
-            if (UnitsInStock ==0)
-            {
-                MessageBox.Show("Units in stock must be number");
-                return;
-            }
 
-            // Create new product
-            var newProduct = new Product
+            try
             {
-                ProductId = ProductId,
-                ProductName = ProductName,
-                CategoryId = CategoryId,
-                QuantityPerUnit = QuantityPerUnit,
-                UnitPrice = UnitPrice,
-                UnitsInStock = UnitsInStock,
-                Discountinued = Discontinued
-            };
+                // Create new product
+                var newProduct = new Product
+                {
+                    ProductId = ProductId,
+                    ProductName = ProductName,
+                    CategoryId = CategoryId,
+                    QuantityPerUnit = QuantityPerUnit,
+                    UnitPrice = UnitPrice,
+                    UnitsInStock = UnitsInStock,
+                    Discountinued = Discontinued
+                };
 
-            // Add to repository
-            bool success = _productService.Add(newProduct);
-            
-            if (success)
-            {
-                MessageBox.Show("Product added successfully!");
-                LoadProducts();
-                ExecuteClear(null);
+                // Add to repository
+                bool success = _productService.Add(newProduct);
+
+                if (success)
+                {
+                    MessageBox.Show("Product added successfully!");
+                    LoadProducts();
+                    ExecuteClear(null);
+                }
+                else
+                {
+                    MessageBox.Show("Failed to add product. The data may be invalid or there was an error.");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Failed to add product. Please try again.");
+                MessageBox.Show($"Error adding product: {ex.Message}");
             }
         }
 
@@ -258,9 +255,9 @@ namespace HuynhAnKhuongWPF.ViewModels
                 return;
             }
 
-            if (UnitPrice < 0)
+            if (UnitPrice <= 0)
             {
-                MessageBox.Show("Price cannot be negative");
+                MessageBox.Show("Unit price must be greater than 0");
                 return;
             }
 
@@ -269,36 +266,33 @@ namespace HuynhAnKhuongWPF.ViewModels
                 MessageBox.Show("Units in stock cannot be negative");
                 return;
             }
-            if (UnitPrice == 0)
-            {
-                MessageBox.Show("Units price must be number");
-                return;
-            }
-            if (UnitsInStock == 0)
-            {
-                MessageBox.Show("Units in stock must be number");
-                return;
-            }
 
-            // Update product properties
-            SelectedProduct.ProductName = ProductName;
-            SelectedProduct.CategoryId = CategoryId;
-            SelectedProduct.QuantityPerUnit = QuantityPerUnit;
-            SelectedProduct.UnitPrice = UnitPrice;
-            SelectedProduct.UnitsInStock = UnitsInStock;
-            SelectedProduct.Discountinued = Discontinued;
+            try
+            {
+                // Update product properties
+                SelectedProduct.ProductName = ProductName;
+                SelectedProduct.CategoryId = CategoryId;
+                SelectedProduct.QuantityPerUnit = QuantityPerUnit;
+                SelectedProduct.UnitPrice = UnitPrice;
+                SelectedProduct.UnitsInStock = UnitsInStock;
+                SelectedProduct.Discountinued = Discontinued;
 
-            // Update in repository
-            bool success = _productService.Update(SelectedProduct);
-            
-            if (success)
-            {
-                MessageBox.Show("Product updated successfully!");
-                LoadProducts();
+                // Update in repository
+                bool success = _productService.Update(SelectedProduct);
+
+                if (success)
+                {
+                    MessageBox.Show("Product updated successfully!");
+                    LoadProducts();
+                }
+                else
+                {
+                    MessageBox.Show("Failed to update product. The data may be invalid or there was an error.");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Failed to update product. Please try again.");
+                MessageBox.Show($"Error updating product: {ex.Message}");
             }
         }
 
@@ -317,7 +311,7 @@ namespace HuynhAnKhuongWPF.ViewModels
 
             // Ask for confirmation
             MessageBoxResult result = MessageBox.Show(
-                $"Are you sure you want to delete {SelectedProduct.ProductName}?", 
+                $"Are you sure you want to delete {SelectedProduct.ProductName}?",
                 "Confirm Deletion",
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Warning);
@@ -325,7 +319,7 @@ namespace HuynhAnKhuongWPF.ViewModels
             if (result == MessageBoxResult.Yes)
             {
                 bool success = _productService.Delete(SelectedProduct.ProductId);
-                
+
                 if (success)
                 {
                     MessageBox.Show("Product deleted successfully!");

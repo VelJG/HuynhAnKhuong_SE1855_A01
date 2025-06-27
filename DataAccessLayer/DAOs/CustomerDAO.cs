@@ -28,32 +28,47 @@ namespace DataAccessLayer.DAOs
 
         public bool Add(Customer entity)
         {
-
-            if (_customers.Any(c => c.CustomerId == entity.CustomerId))
+            try
             {
+                if (_customers.Any(c => c.CustomerId == entity.CustomerId))
+                {
+                    return false;
+                }
+                int newId = _customers.Max(c => c.CustomerId) + 1;
+                entity.CustomerId = newId;
+                _customers.Add(entity);
+                return true;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine($"Error adding customer: {ex.Message}");
                 return false;
             }
-            int newId = _customers.Max(c => c.CustomerId) + 1;
-            entity.CustomerId = newId;
-            _customers.Add(entity);
-            return true;
+
         }
 
         public bool Update(Customer entity)
         {
-
-            var customer = _customers.FirstOrDefault(c => c.CustomerId == entity.CustomerId);
-            if (customer != null)
+            try
             {
-                customer.CompanyName = entity.CompanyName;
-                customer.ContactName = entity.ContactName;
-                customer.ContactTitle = entity.ContactTitle;
-                customer.Address = entity.Address;
-                customer.Phone = entity.Phone;
-                return true;
-            }
-            return false;
+                var customer = _customers.FirstOrDefault(c => c.CustomerId == entity.CustomerId);
+                if (customer != null)
+                {
+                    customer.CompanyName = entity.CompanyName;
+                    customer.ContactName = entity.ContactName;
+                    customer.ContactTitle = entity.ContactTitle;
+                    customer.Address = entity.Address;
+                    customer.Phone = entity.Phone;
+                    return true;
+                }
+                return false;
 
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error updating customer: {ex.Message}");
+                return false;
+            }
         }
 
         public bool Delete(int id)

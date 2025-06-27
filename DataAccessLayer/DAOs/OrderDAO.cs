@@ -29,26 +29,42 @@ namespace DataAccessLayer.DAOs
 
         public bool Add(Order entity)
         {
-            if (_orders.Any(o => o.OrderId == entity.OrderId))
+            try
             {
-                return false;
+                if (_orders.Any(o => o.OrderId == entity.OrderId))
+                {
+                    return false;
 
+                }
+                _orders.Add(entity);
+                return true;
             }
-            _orders.Add(entity);
-            return true;
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error adding order: {ex.Message}");
+                return false;
+            }
         }
 
         public bool Update(Order entity)
         {
-            var order = _orders.FirstOrDefault(o => o.OrderId == entity.OrderId);
-            if (order != null)
+            try
             {
-                order.CustomerId = entity.CustomerId;
-                order.EmployeeId = entity.EmployeeId;
-                order.OrderDate = entity.OrderDate;
-                return true;
+                var order = _orders.FirstOrDefault(o => o.OrderId == entity.OrderId);
+                if (order != null)
+                {
+                    order.CustomerId = entity.CustomerId;
+                    order.EmployeeId = entity.EmployeeId;
+                    order.OrderDate = entity.OrderDate;
+                    return true;
+                }
+                return false;
             }
-            return false;
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error updating order: {ex.Message}");
+                return false;
+            }
         }
 
         public bool Delete(int id)

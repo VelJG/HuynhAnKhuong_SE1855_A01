@@ -11,18 +11,18 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        
+
         <!-- Header -->
         <Grid Grid.Row="0" Margin="0,0,0,10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            
+
             <TextBlock Grid.Column="0" Text="Order Management" FontSize="20" FontWeight="Bold"/>
             <Button Grid.Column="1" Content="New Order" Command="{Binding NewOrderCommand}" Width="100" Height="30"/>
         </Grid>
-        
+
         <!-- Main Content -->
         <TabControl Grid.Row="1">
             <!-- Order List Tab -->
@@ -32,7 +32,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    
+
                     <!-- Search Bar -->
                     <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,10,0,10">
                         <TextBlock Text="Search:" VerticalAlignment="Center" Margin="0,0,10,0"/>
@@ -40,7 +40,7 @@
                         <Button Content="Search" Command="{Binding SearchCommand}" Width="80" Height="25" Margin="0,0,10,0"/>
                         <Button Content="Clear" Command="{Binding ClearCommand}" Width="80" Height="25"/>
                     </StackPanel>
-                    
+
                     <!-- Orders DataGrid -->
                     <DataGrid Grid.Row="1" 
                               ItemsSource="{Binding Orders}" 
@@ -60,18 +60,18 @@
                     </DataGrid>
                 </Grid>
             </TabItem>
-            
+
             <!-- Order Details Tab -->
             <TabItem Header="Order Details">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    
+
                     <!-- Order Information -->
                     <GroupBox Grid.Row="0" Header="Order Information" Margin="0,10,0,10">
                         <Grid Margin="5">
@@ -84,12 +84,12 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
-                            
+
                             <StackPanel Grid.Row="0" Grid.Column="0" Margin="5">
                                 <TextBlock Text="Order ID"/>
                                 <TextBox Text="{Binding OrderId}" IsEnabled="False" Margin="0,5,5,0"/>
                             </StackPanel>
-                            
+
                             <StackPanel Grid.Row="0" Grid.Column="1" Margin="5">
                                 <TextBlock Text="Customer"/>
                                 <ComboBox ItemsSource="{Binding Customers}" 
@@ -98,7 +98,7 @@
                                           DisplayMemberPath="ContactName"
                                           Margin="0,5,5,0"/>
                             </StackPanel>
-                            
+
                             <StackPanel Grid.Row="0" Grid.Column="2" Margin="5">
                                 <TextBlock Text="Employee"/>
                                 <ComboBox ItemsSource="{Binding Employees}" 
@@ -107,21 +107,21 @@
                                           DisplayMemberPath="Name"
                                           Margin="0,5,5,0"/>
                             </StackPanel>
-                            
+
                             <StackPanel Grid.Row="1" Grid.Column="0" Margin="5">
                                 <TextBlock Text="Order Date"/>
                                 <DatePicker SelectedDate="{Binding OrderDate}" Margin="0,5,5,0"/>
                             </StackPanel>
-                            
+
                             <StackPanel Grid.Row="1" Grid.Column="2" Margin="5">
                                 <TextBlock Text="Order Total"/>
                                 <TextBox Text="{Binding OrderTotal, StringFormat=\{0:C\}}" IsEnabled="False" Margin="0,5,5,0"/>
                             </StackPanel>
                         </Grid>
                     </GroupBox>
-                    
+
                     <!-- Add Product Form -->
-                    <GroupBox Grid.Row="1" Header="Add Product" Margin="0,0,0,10">
+                    <GroupBox Grid.Row="2" Header="Add Product" Margin="0,0,0,10">
                         <Grid Margin="5">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="2*"/>
@@ -135,7 +135,7 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
-                            
+
                             <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,5,0">
                                 <TextBlock Text="Product"/>
                                 <ComboBox ItemsSource="{Binding Products}" 
@@ -144,32 +144,39 @@
                                           DisplayMemberPath="ProductName"
                                           Margin="0,5,0,0"/>
                             </StackPanel>
-                            
+
                             <StackPanel Grid.Row="0" Grid.Column="1" Margin="0,0,5,0">
                                 <TextBlock Text="Unit Price"/>
                                 <TextBox Text="{Binding UnitPrice, StringFormat=\{0:C\}}" IsEnabled="False" Margin="0,5,0,0"/>
                             </StackPanel>
-                            
+
                             <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,0,5,0">
                                 <TextBlock Text="Quantity"/>
                                 <TextBox Text="{Binding Quantity}" Margin="0,5,0,0"/>
                             </StackPanel>
-                            
+
                             <StackPanel Grid.Row="0" Grid.Column="3" Margin="0,0,5,0">
                                 <TextBlock Text="Discount (0-1)"/>
                                 <TextBox Text="{Binding Discount}" Margin="0,5,0,0"/>
                             </StackPanel>
-                            
+
                             <Button Grid.Row="0" Grid.Column="4" Content="Add" Command="{Binding AddOrderDetailCommand}" 
                                     VerticalAlignment="Bottom" Width="80" Height="25" Margin="0,0,5,0"/>
-                                    
+
                             <Button Grid.Row="0" Grid.Column="5" Content="Update" Command="{Binding UpdateOrderDetailCommand}" 
-                                    VerticalAlignment="Bottom" Width="80" Height="25" Margin="0,0,0,0"/>
+                                    VerticalAlignment="Bottom" Width="80" Height="25"/>
                         </Grid>
                     </GroupBox>
-                    
+
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,10">
+                        <Button Content="Save Order" Command="{Binding SaveOrderCommand}" 
+                                Width="100" Height="30" Margin="0,0,10,0"/>
+                        <Button Content="Delete Order" Command="{Binding DeleteOrderCommand}" 
+                                Width="100" Height="30"/>
+                    </StackPanel>
+
                     <!-- Order Details DataGrid -->
-                    <DataGrid Grid.Row="2" 
+                    <DataGrid Grid.Row="3" 
                               ItemsSource="{Binding SelectedOrderDetails}" 
                               SelectedItem="{Binding SelectedOrderDetail}"
                               AutoGenerateColumns="False"
@@ -177,8 +184,7 @@
                               SelectionMode="Single"
                               GridLinesVisibility="All"
                               BorderThickness="1"
-                              HeadersVisibility="All"
-                              Margin="0,0,0,10">
+                              HeadersVisibility="All">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Product" Binding="{Binding Product.ProductName}" Width="*"/>
                             <DataGridTextColumn Header="Unit Price" Binding="{Binding UnitPrice, StringFormat=\{0:C\}}" Width="100"/>
@@ -191,15 +197,9 @@
                             </DataGridTextColumn>
                         </DataGrid.Columns>
                     </DataGrid>
-                    
-                    <Button Grid.Row="3" Content="Remove Selected Item" Command="{Binding RemoveOrderDetailCommand}" 
-                            HorizontalAlignment="Right" Width="150" Height="25" Margin="0,0,0,20"/>
-                    
-                    <!-- Action Buttons -->
-                    <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right">
-                        <Button Content="Delete Order" Command="{Binding DeleteOrderCommand}" Width="100" Height="30" Margin="0,0,10,0"/>
-                        <Button Content="Save Order" Command="{Binding SaveOrderCommand}" Width="100" Height="30"/>
-                    </StackPanel>
+
+                    <Button Grid.Row="4" Content="Remove Selected Item" Command="{Binding RemoveOrderDetailCommand}" 
+                            HorizontalAlignment="Right" Width="150" Height="30" Margin="0,10,0,0"/>
                 </Grid>
             </TabItem>
         </TabControl>

@@ -28,20 +28,27 @@ namespace DataAccessLayer.DAOs
 
         public bool Add(OrderDetail entity)
         {
-            if (_orderDetails.Any(od => od.OrderId == entity.OrderId && od.ProductId == entity.ProductId))
+            try
             {
+                if (_orderDetails.Any(od => od.OrderId == entity.OrderId && od.ProductId == entity.ProductId))
+                {
+                    return false;
+                }
+
+                _orderDetails.Add(entity);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error adding order detail: {ex.Message}");
                 return false;
             }
-            
-            _orderDetails.Add(entity);
-            return true;
         }
-
         public bool Update(OrderDetail entity)
         {
-            var orderDetail = _orderDetails.FirstOrDefault(od => 
+            var orderDetail = _orderDetails.FirstOrDefault(od =>
                 od.OrderId == entity.OrderId && od.ProductId == entity.ProductId);
-                
+
             if (orderDetail != null)
             {
                 orderDetail.UnitPrice = entity.UnitPrice;
@@ -49,25 +56,25 @@ namespace DataAccessLayer.DAOs
                 orderDetail.Discount = entity.Discount;
                 return true;
             }
-            return false;   
+            return false;
         }
 
         public bool Delete(int id)
         {
-         return false; // Not used   
+            return false; // Not used   
         }
 
         public bool Delete(int orderId, int productId)
         {
-            var orderDetail = _orderDetails.FirstOrDefault(od => 
+            var orderDetail = _orderDetails.FirstOrDefault(od =>
                 od.OrderId == orderId && od.ProductId == productId);
-                
+
             if (orderDetail != null)
             {
                 _orderDetails.Remove(orderDetail);
                 return true;
             }
-            return false;   
+            return false;
         }
         public IEnumerable<OrderDetail> GetByOrderId(int orderId)
         {
